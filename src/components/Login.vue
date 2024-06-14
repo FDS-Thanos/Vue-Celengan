@@ -1,42 +1,46 @@
 <template>
-  <div class="container-content">
-    <div class="d-flex justify-center align-center">
-      <div class="flex-column pr-14">
-        <h1>BANK CENTRAL LAMONGAN</h1>
-        <img src="@/assets/LamonganBank.png" alt="Bank Logo" width="200px" />
-      </div>
-
-      <div class="d-flex flex-column">
-        <div class="d-flex flex-column align-center">
-          <div class="font-weight-bold">Get Started</div>
-          <div>Already have an account? <span>Sign in</span></div>
+  <div class="login-container">
+    <div class="container-content">
+      <div class="d-flex justify-center align-center">
+        <div class="flex-column pr-14">
+          <h1>BANK CENTRAL LAMONGAN</h1>
+          <img src="@/assets/LamonganBank.png" alt="Bank Logo" width="200px" />
         </div>
-        <label for="Username">Username</label>
-        <input
-          v-model="data.username"
-          type="text"
-          class="input"
-          placeholder="Username"
-        />
-        <label for="Password">Password</label>
-        <input
-          v-model="data.password"
-          type="password"
-          class="input"
-          placeholder="Password"
-        />
-        <button class="button" @click="handleLogin">Sign In</button>
 
-        <v-snackbar
-          v-model="data.snackbar"
-          :timeout="2000"
-          :color="data.snackbarColor"
-        >
-          {{ data.pesanLogin }}
-          <template v-slot:actions>
-            <v-btn color="red" text @click="data.snackbar = false">Close</v-btn>
-          </template>
-        </v-snackbar>
+        <div class="d-flex flex-column">
+          <div class="d-flex flex-column align-center">
+            <div class="font-weight-bold">Get Started</div>
+            <div>Already have an account? <span>Sign in</span></div>
+          </div>
+          <label for="Username">Username</label>
+          <input
+            v-model="data.username"
+            type="text"
+            class="input"
+            placeholder="Username"
+          />
+          <label for="Password">Password</label>
+          <input
+            v-model="data.password"
+            type="password"
+            class="input"
+            placeholder="Password"
+          />
+          <button class="button">Sign In</button>
+
+          <!-- <v-snackbar
+            v-model="data.snackbar"
+            :timeout="2000"
+            :color="data.snackbarColor"
+          >
+            {{ data.pesanLogin }}
+            <template v-slot:actions>
+              <v-btn color="red" text @click="data.snackbar = false"
+                >Close</v-btn
+              >
+            </template>
+          </v-snackbar> -->
+        </div>
       </div>
     </div>
   </div>
@@ -71,7 +75,7 @@ const handleLogin = async () => {
 
     if (response.status === 200) {
       auth.authenticated();
-      router.push("transaction");
+      router.push("dashboard");
     } else {
       throw new Error("Invalid response status");
     }
@@ -98,6 +102,13 @@ const handleLogin = async () => {
   border: 1px solid #ddd;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 16px;
+}
+
+.login-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .input {

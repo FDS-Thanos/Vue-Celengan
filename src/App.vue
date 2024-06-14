@@ -1,6 +1,5 @@
 <script setup>
 import { RouterView } from "vue-router";
-import Navbar from "./components/Navbar.vue";
 
 import { useAuthStore } from "@/stores/auth";
 
@@ -8,15 +7,8 @@ const auth = useAuthStore();
 </script>
 
 <template>
-  <div class="navColor">
-    <v-container class="">
-      <Navbar />
-    </v-container>
-  </div>
   <div class="background">
-    <div class="login-container">
-      <RouterView />
-    </div>
+    <RouterView />
   </div>
 </template>
 
