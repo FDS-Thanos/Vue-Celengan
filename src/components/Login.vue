@@ -6,7 +6,6 @@
           <h1>BANK CENTRAL LAMONGAN</h1>
           <img src="@/assets/LamonganBank.png" alt="Bank Logo" width="200px" />
         </div>
-
         <div class="d-flex flex-column">
           <div class="d-flex flex-column align-center">
             <div class="font-weight-bold">Get Started</div>
@@ -26,20 +25,7 @@
             class="input"
             placeholder="Password"
           />
-          <button class="button">Sign In</button>
-
-          <!-- <v-snackbar
-            v-model="data.snackbar"
-            :timeout="2000"
-            :color="data.snackbarColor"
-          >
-            {{ data.pesanLogin }}
-            <template v-slot:actions>
-              <v-btn color="red" text @click="data.snackbar = false"
-                >Close</v-btn
-              >
-            </template>
-          </v-snackbar> -->
+          <button @click="handleLogin" class="button">Sign In</button>
         </div>
       </div>
     </div>
@@ -57,40 +43,31 @@ const router = useRouter();
 const data = reactive({
   username: "",
   password: "",
-  snackbar: false,
-  pesanLogin: "",
-  snackbarColor: "success",
 });
 
 const myAxios = inject("myAxios");
 
 const handleLogin = async () => {
   try {
-    data.snackbar = false;
-
-    const response = await myAxios.post("auth/login", {
+    const response = await myAxios.post("auth/logindb", {
       username: data.username,
       password: data.password,
     });
 
     if (response.status === 200) {
       auth.authenticated();
-      router.push("dashboard");
+      router.replace("dashboard");
+      window.alert("Login Berhasil");
     } else {
-      throw new Error("Invalid response status");
+      throw new Error("Status respons tidak valid");
     }
-
-    data.pesanLogin = "Login Successfully";
-    data.snackbarColor = "success";
   } catch (error) {
-    console.error("Login failed", error);
-    data.pesanLogin =
+    console.error("Gagal login", error);
+    const errorMessage =
       error.response && error.response.status === 401
-        ? "Username or Password is incorrect"
-        : "Error Logging in";
-    data.snackbarColor = "error";
-  } finally {
-    data.snackbar = true;
+        ? "Username atau Password salah"
+        : "Gagal melakukan login";
+    window.alert(errorMessage);
   }
 };
 </script>

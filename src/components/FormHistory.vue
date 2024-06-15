@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title>Filter History</v-card-title>
     <v-card-text>
-      <v-form @submit.prevent="filterHistory">
+      <v-form @submit.prevent="fetchHistoryData">
         <v-row>
           <v-col cols="12" sm="6">
             <div class="custom-datepicker">
@@ -43,69 +43,55 @@
     <v-card-text>
       <v-data-table
         :headers="headers"
-        :items="filteredItems"
+        :items="data.items"
         :items-per-page="5"
         class="elevation-1"
       >
-        <template v-slot:items="props">
-          <td>{{ props.item.id }}</td>
-          <td>{{ props.item.nama }}</td>
-          <td>{{ props.item.tanggal }}</td>
-          <td>{{ props.item.jumlah }}</td>
-        </template>
       </v-data-table>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      tanggalMulai: null,
-      tanggalAkhir: null,
+import { ref, inject, reactive } from "vue";
 
-      items: [
-        { id: 1, nama: "User 1", tanggal: "2024-06-10", jumlah: 10000 },
-        { id: 2, nama: "User 2", tanggal: "2024-06-11", jumlah: 15000 },
-        { id: 3, nama: "User 3", tanggal: "2024-06-12", jumlah: 12000 },
-        { id: 4, nama: "User 4", tanggal: "2024-06-13", jumlah: 8000 },
-        { id: 5, nama: "User 5", tanggal: "2024-06-14", jumlah: 11000 },
-      ],
-      headers: [
-        { text: "ID", align: "start", sortable: false, value: "id" },
-        { text: "Nama Pengguna", value: "nama" },
-        { text: "Tanggal", value: "tanggal" },
-        { text: "Jumlah", value: "jumlah" },
-      ],
-    };
-  },
-  computed: {
-    filteredItems() {
-      // Filter items berdasarkan tanggalMulai dan tanggalAkhir
-      if (this.tanggalMulai && this.tanggalAkhir) {
-        return this.items.filter((item) => {
-          const tanggalItem = new Date(item.tanggal);
-          return (
-            tanggalItem >= new Date(this.tanggalMulai) &&
-            tanggalItem <= new Date(this.tanggalAkhir)
-          );
-        });
-      } else {
-        return this.items;
+export default {
+  setup() {
+    const myAxios = inject("myAxios");
+
+    const tanggalMulai = ref(null);
+    const tanggalAkhir = ref(null);
+    const data = reactive({
+      items: [],
+    });
+    const headers = [
+      { text: "ID", align: "start", sortable: false, value: "Id" },
+      { text: "Account ID", value: "AccountId" },
+      { text: "Bank ID", value: "BanTransactionReferencek_id" },
+      { text: "Amount", value: "TransactionAmount" },
+      { text: "Transaction Date", value: "TransactionDate" },
+    ];
+
+    const fetchHistoryData = async () => {
+      try {
+        const response = await myAxios.get("/transaction/transaction-history");
+        data.items = response.data; // Asumsikan data yang diterima adalah array objek
+        console.log(data.items);
+      } catch (error) {
+        console.error("Terjadi kesalahan saat mengambil data history:", error);
       }
-    },
-  },
-  methods: {
-    filterHistory() {
-      // Metode untuk melakukan filter history, akan dijalankan saat tombol "Filter" ditekan
-      console.log(
-        "Filter history dari tanggal",
-        this.tanggalMulai,
-        "sampai tanggal",
-        this.tanggalAkhir
-      );
-    },
+    };
+
+    // Panggil fetchHistoryData saat komponen di-mount
+    fetchHistoryData();
+
+    return {
+      tanggalMulai,
+      tanggalAkhir,
+      data,
+      headers,
+      fetchHistoryData,
+    };
   },
 };
 </script>
